@@ -37,7 +37,7 @@ OpenAI (gpt-4o-mini) o Anthropic (claude-haiku-4-5), según LLM_PROVIDER
 
 ## Puesta en marcha
 
-Requisitos: Python 3.12+ y [uv](https://docs.astral.sh/uv/).
+Requisitos: Python 3.11+ y [uv](https://docs.astral.sh/uv/).
 
 ```bash
 cd estimador-cag
