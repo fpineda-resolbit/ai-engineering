@@ -1,13 +1,44 @@
 from fastapi import APIRouter, HTTPException, status
 from fastapi.concurrency import run_in_threadpool
 
-from app.schemas.estimation import EstimationRequest, EstimationResponse, TokenUsage
+from app.schemas.estimation import (
+    ErrorResponse,
+    EstimationRequest,
+    EstimationResponse,
+    TokenUsage,
+)
 from app.services.llm_service import LLMConfigError, LLMServiceError, generate_estimation
 
 router = APIRouter(tags=["estimations"])
 
 
-@router.post("/estimate", response_model=EstimationResponse)
+@router.post(
+    "/estimate",
+    response_model=EstimationResponse,
+    responses={
+        status.HTTP_502_BAD_GATEWAY: {
+            "model": ErrorResponse,
+            "description": "El proveedor del LLM falló (red, autenticación, rate limit, "
+            "respuesta truncada o rechazada).",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Error llamando a anthropic: rate limit"}
+                }
+            },
+        },
+        status.HTTP_503_SERVICE_UNAVAILABLE: {
+            "model": ErrorResponse,
+            "description": "Servicio sin configurar: falta la API key del proveedor.",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Falta la API key para el proveedor 'anthropic'. Revisa el .env."
+                    }
+                }
+            },
+        },
+    },
+)
 async def estimate(request: EstimationRequest) -> EstimationResponse:
     """Recibe una transcripción de reunión y devuelve una estimación generada por el LLM."""
     try:

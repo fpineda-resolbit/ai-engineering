@@ -18,6 +18,10 @@ class TokenUsage(BaseModel):
     output_tokens: int
 
 
+class ErrorResponse(BaseModel):
+    detail: str = Field(..., description="Descripción del error.")
+
+
 class EstimationResponse(BaseModel):
     estimation: str = Field(..., description="Estimación generada por el LLM (Markdown).")
     model: str

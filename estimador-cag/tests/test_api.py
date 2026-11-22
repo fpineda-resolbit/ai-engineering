@@ -21,6 +21,11 @@ def test_docs_available(client):
     assert client.get("/openapi.json").json()["info"]["title"] == "Estimador CAG"
 
 
+def test_openapi_documents_error_responses(client):
+    responses = client.get("/openapi.json").json()["paths"]["/api/v1/estimate"]["post"]["responses"]
+    assert {"200", "422", "502", "503"} <= set(responses)
+
+
 def test_system_prompt_injects_all_examples():
     prompt = llm_service.build_system_prompt()
     for example in ESTIMATION_EXAMPLES:
