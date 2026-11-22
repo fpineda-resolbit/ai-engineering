@@ -106,12 +106,17 @@ def _call_anthropic(settings: Settings, api_key: str, transcription: str):
     from anthropic import Anthropic
 
     client = Anthropic(api_key=api_key)
+    # La API de Anthropic ya no acepta temperature/top_p/top_k; los modelos actuales
+    # razonan (adaptive thinking) y esos tokens cuentan dentro de max_tokens.
     response = client.messages.create(
         model=settings.model,
-        temperature=settings.LLM_TEMPERATURE,
         max_tokens=settings.LLM_MAX_TOKENS,
         system=build_system_prompt(),
         messages=[{"role": "user", "content": transcription}],
     )
+    if response.stop_reason == "refusal":
+        raise RuntimeError("el modelo rechazó la petición")
+    if response.stop_reason == "max_tokens":
+        raise RuntimeError("respuesta truncada: sube LLM_MAX_TOKENS")
     text = "".join(block.text for block in response.content if block.type == "text")
     return text, response.usage.input_tokens, response.usage.output_tokens, response.model

@@ -53,8 +53,8 @@ Variables de entorno (`.env`):
 | `LLM_PROVIDER` | `openai` | `openai` o `anthropic` |
 | `LLM_MODEL` | vacío | Vacío = `gpt-4o-mini` / `claude-haiku-4-5` |
 | `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` | — | Clave del proveedor elegido |
-| `LLM_TEMPERATURE` | `0.2` | Temperatura de generación |
-| `LLM_MAX_TOKENS` | `2000` | Máximo de tokens de salida |
+| `LLM_TEMPERATURE` | `0.2` | Temperatura (solo OpenAI; la API de Anthropic ya no la acepta) |
+| `LLM_MAX_TOKENS` | `8000` | Máximo de tokens de salida (en Claude incluye el razonamiento) |
 
 ## Uso
 
@@ -101,7 +101,7 @@ El workflow [`.github/workflows/estimador-cag.yml`](../.github/workflows/estimad
 1. Lint con ruff.
 2. Tests: estructura de carpetas y API con el LLM simulado.
 3. Smoke test: arranca el servidor y comprueba `/health`, `/docs` y que `/estimate` responde `503` sin API key.
-4. Estimación real con la transcripción de ejemplo, solo si el repo tiene el secret `OPENAI_API_KEY`.
+4. Estimación real con Anthropic (`claude-haiku-5-5`) y la transcripción de ejemplo, solo si el repo tiene el secret `ANTHROPIC_API_KEY`.
 
 ## Checklist del ejercicio
 

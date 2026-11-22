@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     LLM_PROVIDER: Provider = "openai"
     LLM_MODEL: str = ""
     LLM_TEMPERATURE: float = 0.2
-    LLM_MAX_TOKENS: int = 2000
+    LLM_MAX_TOKENS: int = 8000
 
     # SecretStr evita que las claves aparezcan en logs o en el repr de Settings.
     OPENAI_API_KEY: SecretStr | None = None

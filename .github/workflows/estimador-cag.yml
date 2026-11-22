@@ -19,7 +19,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     env:
-      HAS_OPENAI_KEY: ${{ secrets.OPENAI_API_KEY != '' }}
+      HAS_ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -52,10 +52,12 @@ jobs:
             -H 'Content-Type: application/json' -d @request.json)
           test "$code" = "503"
 
-      - name: Estimación real con el LLM (solo si existe el secret OPENAI_API_KEY)
+      - name: Estimación real con el LLM (solo si existe el secret ANTHROPIC_API_KEY)
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        if: env.HAS_OPENAI_KEY == 'true'
+          LLM_PROVIDER: anthropic
+          LLM_MODEL: claude-haiku-5-5
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        if: env.HAS_ANTHROPIC_KEY == 'true'
         run: |
           python3 -c 'import json,sys; print(json.dumps({"transcription": open(sys.argv[1]).read()}))' transcripts/landing-hubspot.txt > request.json
           uv run uvicorn app.main:app --port 8001 &
