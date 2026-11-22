@@ -1,0 +1,13 @@
+# Entorno y secretos
+.env
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Artefactos del pipeline
+request.json
+response.json
