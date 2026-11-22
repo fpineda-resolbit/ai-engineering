@@ -18,6 +18,8 @@ defaults:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    env:
+      HAS_OPENAI_KEY: ${{ secrets.OPENAI_API_KEY != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -53,7 +55,7 @@ jobs:
       - name: Estimación real con el LLM (solo si existe el secret OPENAI_API_KEY)
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        if: env.OPENAI_API_KEY != ''
+        if: env.HAS_OPENAI_KEY == 'true'
         run: |
           python3 -c 'import json,sys; print(json.dumps({"transcription": open(sys.argv[1]).read()}))' transcripts/landing-hubspot.txt > request.json
           uv run uvicorn app.main:app --port 8001 &
